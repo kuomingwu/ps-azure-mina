@@ -1,3 +1,3 @@
-### change ps1 line one as path you want to export excel folder
+### 1. change ps1 line one as path you want to export excel folder
 
-### execute .ps1
+### 2. execute .ps1
