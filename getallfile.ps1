@@ -29,6 +29,8 @@ function GetResourceBySubscriptionId(){
 }
 
 function exportToExcel ($list){
+    $typeCount =  $list | Group-Object -Property { $_.ResourceType }
+
     $excel = New-Object -ComObject excel.application
     $excel.visible = $False
     $workbook = $excel.Workbooks.Add()
@@ -43,13 +45,22 @@ function exportToExcel ($list){
     $diskSpacewksht.Cells.Item(2,8).Font.ColorIndex = 55
     $diskSpacewksht.Cells.Item(2,8).Font.Color = 8210719
 
+    $typeIndex = 1 ;
+    #insert type
+    $typeCount | foreach{
+        $diskSpacewksht.Cells.Item(3,$typeIndex) = $_.Name
+        $diskSpacewksht.Cells.Item(4,$typeIndex) = $_.Count
+        $typeIndex ++ ;
+    }
 
-    $diskSpacewksht.Cells.Item(3,1) = 'SubscriptionId'
-    $diskSpacewksht.Cells.Item(3,2) = 'ResourceType'
-    $diskSpacewksht.Cells.Item(3,3) = 'ResourceId'
-    $diskSpacewksht.Cells.Item(3,4) = 'ResourceName'
 
-    $index = 4 ;
+
+    $diskSpacewksht.Cells.Item(5,1) = 'SubscriptionId'
+    $diskSpacewksht.Cells.Item(5,2) = 'ResourceType'
+    $diskSpacewksht.Cells.Item(5,3) = 'ResourceId'
+    $diskSpacewksht.Cells.Item(5,4) = 'ResourceName'
+
+    $index = 6 ;
     for($i = 0 ; $i -lt $list.Count ; $i++){
        $from = $index + $i ;    
        $diskSpacewksht.Cells.Item($from,1) = $list[$i].SubscriptionId
@@ -82,9 +93,6 @@ $info | foreach {
     $resourceList = GetResourceBySubscriptionId($_) 
     $list += $resourceList ;
 }
-
-
-
 exportToExcel($list);
 
 
